@@ -29,21 +29,23 @@ ai-service/ → NLP-based AI microservice
 cd ai-service
 pip install -r requirements.txt
 uvicorn app:app --reload --port 8000
-
-Backend
+```
+### Backend
+```bash
 cd backend
 npm install
 npm run dev
-
-Frontend
+```
+### Frontend
+```bash
 cd frontend
 npm install
 npm run dev
-
-Future_Scope
+```
+### Future_Scope
 Model accuracy improvement
 Cloud deployment
 Public service complaint support
 
-Author
-Vansh Patil
+### Author
+##Vansh Patil
