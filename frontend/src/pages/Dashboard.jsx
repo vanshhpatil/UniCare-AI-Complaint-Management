@@ -177,6 +177,10 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+      <div className="text-xs text-slate-500 mt-6 text-center">
+  Crafted with <span className="text-red-400">❤️</span> by{" "}
+  <span className="text-slate-300 font-medium">Vanshh</span>
+</div>
     </>
   );
 }
