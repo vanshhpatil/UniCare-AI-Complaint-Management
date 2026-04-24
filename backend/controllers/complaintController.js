@@ -156,11 +156,21 @@ export const createComplaint = async (req, res) => {
   ?priority=High
   ?category=Water
 */
+/* ================= GET ALL COMPLAINTS ================= */
 export const getComplaints = async (req, res) => {
   try {
     const { status, priority, category } = req.query;
 
     const filter = {};
+
+    /* 🔥 ROLE BASED ACCESS */
+    // Admin → sab complaints
+    // Student → sirf apni
+    if (req.user.role !== "admin") {
+      filter.createdBy = req.user.email; // ya _id (depends on your schema)
+    }
+
+    /* 🔍 OPTIONAL FILTERS */
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
     if (category) filter.category = category;
@@ -169,8 +179,15 @@ export const getComplaints = async (req, res) => {
       createdAt: -1,
     });
 
+    /* 🧪 DEBUG (temporary) */
+    console.log("👤 USER:", req.user.email);
+    console.log("🛠 ROLE:", req.user.role);
+    console.log("📊 FILTER:", filter);
+    console.log("📦 RESULT COUNT:", complaints.length);
+
     res.status(200).json(complaints);
   } catch (error) {
+    console.error("❌ getComplaints error:", error);
     res.status(500).json({ message: error.message });
   }
 };

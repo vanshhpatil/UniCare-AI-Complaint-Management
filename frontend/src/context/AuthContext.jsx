@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
   };
-
+console.log("AuthContext loaded", token);
   return (
     <AuthContext.Provider
       value={{

@@ -78,6 +78,7 @@
 // };
 
 // export const useComplaints = () => useContext(ComplaintContext);
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 
@@ -87,25 +88,40 @@ const API_URL = "http://localhost:5000/api/complaints";
 
 export const ComplaintProvider = ({ children }) => {
   const { token, user } = useAuth();
+
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(false);
 
   /* ================= FETCH COMPLAINTS ================= */
-  const fetchComplaints = async () => {
-    if (!token) return;
+  const fetchComplaints = async (filters = "", useGlobal = true) => {
+    if (!token) {
+      console.log("⛔ No token, skipping fetch");
+      return [];
+    }
 
     try {
       setLoading(true);
-      const res = await fetch(API_URL, {
+
+      const res = await fetch(`${API_URL}${filters}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await res.json();
-      setComplaints(data);
+
+      const safeData = Array.isArray(data) ? data : [];
+
+      // 🔥 IMPORTANT: only update global if needed
+      if (useGlobal) {
+        setComplaints(safeData);
+      }
+
+      return safeData;
     } catch (err) {
-      console.error("Failed to fetch complaints", err);
+      console.error("❌ Failed to fetch complaints", err);
+      if (useGlobal) setComplaints([]);
+      return [];
     } finally {
       setLoading(false);
     }
@@ -123,14 +139,19 @@ export const ComplaintProvider = ({ children }) => {
         body: JSON.stringify(complaint),
       });
 
-      const newComplaint = await res.json();
-      setComplaints((prev) => [newComplaint, ...prev]);
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to create complaint");
+      }
+
+      // 🔥 refresh global data
+      await fetchComplaints();
     } catch (err) {
-      console.error("Failed to add complaint", err);
+      console.error("❌ Failed to add complaint", err);
     }
   };
 
-  /* ================= RESOLVE COMPLAINT (ADMIN) ================= */
+  /* ================= RESOLVE COMPLAINT ================= */
   const resolveComplaint = async (id) => {
     try {
       const res = await fetch(`${API_URL}/${id}/resolve`, {
@@ -146,16 +167,16 @@ export const ComplaintProvider = ({ children }) => {
         prev.map((c) => (c._id === updated._id ? updated : c))
       );
     } catch (err) {
-      console.error("Failed to resolve complaint", err);
+      console.error("❌ Failed to resolve complaint", err);
     }
   };
 
-  /* ================= AUTO LOAD ================= */
+  /* ================= AUTO LOAD (FINAL FIX 🔥) ================= */
   useEffect(() => {
-    if (user) {
-      fetchComplaints();
+    if (token) {
+      fetchComplaints(); // 🔥 always run after token available
     }
-  }, [user]);
+  }, [token]);
 
   return (
     <ComplaintContext.Provider
@@ -174,3 +195,104 @@ export const ComplaintProvider = ({ children }) => {
 };
 
 export const useComplaints = () => useContext(ComplaintContext);
+// import { createContext, useContext, useEffect, useState } from "react";
+// import { useAuth } from "./AuthContext";
+
+// const ComplaintContext = createContext();
+
+// const API_URL = "http://localhost:5000/api/complaints";
+
+// export const ComplaintProvider = ({ children }) => {
+//   const { token, user } = useAuth();
+//   const [complaints, setComplaints] = useState([]);
+//   const [loading, setLoading] = useState(false);
+
+//   /* ================= FETCH COMPLAINTS ================= */
+//   const fetchComplaints = async (filters = "") => {
+//     if (!token) return;
+
+//     try {
+//       setLoading(true);
+//       const res = await fetch(`${API_URL}${filters}`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       const data = await res.json();
+
+//       // ✅ FIX: ensure always array
+//       setComplaints(Array.isArray(data) ? data : []);
+//     } catch (err) {
+//       console.error("Failed to fetch complaints", err);
+//       setComplaints([]); // fallback safe
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   /* ================= ADD COMPLAINT ================= */
+//   const addComplaint = async (complaint) => {
+//     try {
+//       const res = await fetch(API_URL, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify(complaint),
+//       });
+
+//       await res.json();
+
+//       // ✅ FIX: refresh data after add
+//       await fetchComplaints();
+//     } catch (err) {
+//       console.error("Failed to add complaint", err);
+//     }
+//   };
+
+//   /* ================= RESOLVE COMPLAINT (ADMIN) ================= */
+//   const resolveComplaint = async (id) => {
+//     try {
+//       const res = await fetch(`${API_URL}/${id}/resolve`, {
+//         method: "PATCH",
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       const updated = await res.json();
+
+//       setComplaints((prev) =>
+//         prev.map((c) => (c._id === updated._id ? updated : c))
+//       );
+//     } catch (err) {
+//       console.error("Failed to resolve complaint", err);
+//     }
+//   };
+
+//   /* ================= AUTO LOAD ================= */
+//   useEffect(() => {
+//     if (user) {
+//       fetchComplaints();
+//     }
+//   }, [user]);
+
+//   return (
+//     <ComplaintContext.Provider
+//       value={{
+//         complaints,
+//         loading,
+//         fetchComplaints,
+//         addComplaint,
+//         resolveComplaint,
+//         isAdmin: user?.role === "admin",
+//       }}
+//     >
+//       {children}
+//     </ComplaintContext.Provider>
+//   );
+// };
+
+// export const useComplaints = () => useContext(ComplaintContext);

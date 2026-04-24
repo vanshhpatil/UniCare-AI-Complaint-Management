@@ -16,20 +16,36 @@ export default function RaiseComplaint() {
   const aiResult = aiSmartFilter(description);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+  e.preventDefault();
+  setSubmitting(true);
 
-    await addComplaint({
-      title,
-      description,
-      category: aiResult.category || "General",
-      priority: aiResult.priority || "Low",
-      createdBy: user?.email,
-    });
+  if (!user) {
+    alert("User not logged in");
+    return;
+  }
 
-    setSubmitting(false);
-    navigate("/dashboard");
+  const complaintData = {
+    title,
+    description,
+    category: aiResult.category || "General",
+    priority: aiResult.priority || "Low",
+    createdBy: user.email, // 🔥 IMPORTANT
   };
+
+  console.log("Sending complaint:", complaintData);
+
+  try {
+    await addComplaint(complaintData);
+    alert("Complaint submitted ✅");
+
+    navigate("/dashboard");
+  } catch (err) {
+    console.error("Submit error:", err);
+    alert("Failed to submit complaint ❌");
+  }
+
+  setSubmitting(false);
+};
 
   return (
     <div className="flex justify-center items-start">
