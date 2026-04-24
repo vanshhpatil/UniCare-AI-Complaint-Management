@@ -44,13 +44,14 @@ export default function AdminSidebar({ onNavigate }) {
         </NavLink>
 
        
-
-        <button
-          onClick={() => onNavigate("complaints")}
-          className={`${base} ${inactive} w-full text-left`}
-        >
-          📁 Complaints
-        </button>
+<NavLink
+  to="/admin/complaints"
+  className={({ isActive }) =>
+    `${base} ${isActive ? active : inactive}`
+  }
+>
+  📁 Complaints
+</NavLink>
 
         <button
           onClick={() => onNavigate("reports")}

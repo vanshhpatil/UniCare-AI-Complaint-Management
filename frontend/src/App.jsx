@@ -54,6 +54,7 @@ import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentLayout from "./layouts/StudentLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import AdminComplaints from "./pages/admin/AdminComplaints";
 
 export default function App() {
   return (
@@ -91,6 +92,9 @@ export default function App() {
         }
       >
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        
+
+<Route path="/admin/complaints" element={<AdminComplaints />} />
       </Route>
 
       {/* ===== FALLBACK ===== */}
