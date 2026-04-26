@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api/auth";
 export default function Profile() {
   const { user, token, setUser } = useAuth();
 
   const [name, setName] = useState("");
   const [preview, setPreview] = useState("");
   const [file, setFile] = useState(null);
-
+  
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -17,14 +17,16 @@ export default function Profile() {
 
   /* ================= LOAD USER DATA ================= */
   useEffect(() => {
-    if (user) {
-      setName(user.name || "");
+  if (user) {
+    setName(user.name || "");
 
-      if (user.profilePic) {
-        setPreview(`http://localhost:5000/${user.profilePic}`);
-      }
+    if (user.profilePic) {
+      setPreview(
+        `${import.meta.env.VITE_API_URL.replace('/api/auth','')}/${user.profilePic}`
+      );
     }
-  }, [user]);
+  }
+}, [user]);
 
   /* ================= IMAGE HANDLER ================= */
   const handleImage = (e) => {
@@ -67,7 +69,7 @@ export default function Profile() {
         formData.append("newPassword", newPassword);
       }
 
-      const res = await fetch("http://localhost:5000/api/auth/profile", {
+      const res = await fetch(`${API}/profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
