@@ -132,7 +132,7 @@ export function aiSmartFilter(text) {
   }
 
   // Final priority decision
-  if (score >= 5) {
+  if (score >= 3) {
   priority = "High";
 } else if (score >= 2) {
   priority = "Medium";
