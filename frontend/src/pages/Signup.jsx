@@ -41,7 +41,7 @@ const handleSubmit = async (e) => {
       email,
       password,
       role,
-      adminCode,
+      adminAccessCode: adminCode, // ✅ FIX
     });
 
     // ✅ Redirect AFTER signup success

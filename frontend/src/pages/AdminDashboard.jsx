@@ -171,22 +171,28 @@ const NeonLineTooltip = ({ active, payload, label }) => {
   return (
     <div
   id="admin-dashboard-export"
-  className="space-y-10"
+  className="
+  w-full max-w-full
+  px-4 sm:px-6 lg:px-8
+  py-4 sm:py-6
+  space-y-6 sm:space-y-8
+  overflow-x-hidden
+"
 >
 
 
       {/* ================= HEADER ================= */}
       <div>
-        <h1 className="text-4xl font-semibold text-white">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white">
           Admin Dashboard
         </h1>
-        <p className="text-slate-400 mt-1">
+        <p className="text-sm sm:text-base text-slate-400 mt-1">
           Manage and resolve student complaints
         </p>
       </div>
 
       {/* ================= KPI ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {[
           { label: "Total Complaints", value: total },
           { label: "Resolved", value: resolved, color: "text-emerald-400" },
@@ -205,33 +211,65 @@ const NeonLineTooltip = ({ active, payload, label }) => {
       </div>
 
       {/* ================= PIE + BAR ================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
 
         {/* Priority Pie */}
-        <div className="bg-white/[0.06] border border-white/[0.08] rounded-2xl p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Complaints by Priority
-          </h2>
-          <div className="h-64">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie data={priorityData} dataKey="value" innerRadius={60} outerRadius={90}>
-                  {priorityData.map(p => (
-                    <Cell key={p.name} fill={PRIORITY_COLORS[p.name]} />
-                  ))}
-                </Pie>
-                 <Tooltip content={<NeonLineTooltip />} />
+        <div className="w-full bg-white/[0.06] border border-white/[0.08] rounded-2xl p-4 sm:p-6">
+  <h2 className="text-xl font-semibold mb-4">
+    Complaints by Priority
+  </h2>
+
+  <div className="w-full h-[240px] sm:h-[280px] flex items-center justify-center">
+    <ResponsiveContainer width="100%" height="100%" minHeight={240}>
+      <PieChart>
+                <Pie
+  data={priorityData}
+  dataKey="value"
+  nameKey="name"
+  innerRadius={60}
+  outerRadius={90}
+  paddingAngle={4}   // 🔥 separation between slices
+>
+  {priorityData.map((entry) => (
+    <Cell
+      key={entry.name}
+      fill={PRIORITY_COLORS[entry.name]}
+      stroke="#020617"   // 🔥 clean gap effect
+      strokeWidth={2}
+    />
+  ))}
+</Pie>
+
+<Tooltip
+  content={({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-slate-900 border border-indigo-500 px-3 py-2 rounded-lg text-sm shadow-lg">
+          <p className="text-indigo-300 font-semibold">
+            {data.name} Priority
+          </p>
+          <p className="text-white">
+            Complaints: {data.value}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  }}
+  activeOuterRadius={100}
+/>
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Status Bar */}
-        <div className="bg-white/[0.06] border border-white/[0.08] rounded-2xl p-6">
+        <div className="w-full bg-white/[0.06] border border-white/[0.08] rounded-2xl p-4 sm:p-6">
           <h2 className="text-xl font-semibold mb-4">
             Resolution Status
           </h2>
-          <div className="h-64">
+          <div className="w-full h-[240px] sm:h-[280px]">
             <ResponsiveContainer>
               <BarChart data={statusData}>
                 <XAxis dataKey="name" />
@@ -259,8 +297,9 @@ const NeonLineTooltip = ({ active, payload, label }) => {
         {monthlyData.length === 0 ? (
           <p className="text-slate-400">No data available</p>
         ) : (
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-full h-[240px] sm:h-[280px] flex items-center justify-center">
+          <ResponsiveContainer width="100%" height="100%" minHeight={240}>
+            
               <LineChart data={monthlyData}>
 
                 <defs>
@@ -308,18 +347,20 @@ const NeonLineTooltip = ({ active, payload, label }) => {
 
 
       {/* ================= FILTERS ================= */}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-3 sm:gap-4">
         {["category","priority","status"].map((key) => (
          <select
   onChange={(e) => setFilter({ ...filter, [key]: e.target.value })}
   className="
-    bg-white/[0.06] text-slate-200
-    border border-white/[0.15]
-    rounded-xl px-4 py-2
-    backdrop-blur-xl
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500
-  "
+  w-full sm:w-auto
+  bg-white/[0.06] text-slate-200
+  border border-white/[0.15]
+  rounded-xl px-3 sm:px-4 py-2
+  text-sm
+  backdrop-blur-xl
+  focus:outline-none
+  focus:ring-2 focus:ring-indigo-500
+"
 >
   <option value="All" className="bg-slate-900 text-white">
     All {key}
@@ -355,41 +396,45 @@ const NeonLineTooltip = ({ active, payload, label }) => {
           All Complaints
         </h2>
 
-        <table className="w-full text-sm">
-          <thead className="text-slate-400 border-b border-white/[0.08]">
-            <tr>
-              <th className="py-2 text-left">Title</th>
-              <th>Category</th>
-              <th>Priority</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
+        <div className="w-full overflow-x-auto">
+  <table className="min-w-[700px] w-full text-sm">
+  <thead className="text-slate-400 border-b border-white/[0.08]">
+    <tr>
+      <th className="py-3 text-left w-[30%]">Title</th>
+      <th className="text-left w-[20%]">Category</th>
+      <th className="text-left w-[20%]">Priority</th>
+      <th className="text-left w-[20%]">Status</th>
+      <th className="w-[10%]"></th>
+    </tr>
+  </thead>
 
-          <tbody>
-            {paginatedData.map((c) => (
-              <tr key={c._id} className="border-b border-white/[0.05]">
-                <td className="py-3">{c.title}</td>
-                <td>{c.category}</td>
-                <td>{c.priority}</td>
-                <td>{c.status}</td>
-                <td>
-                  {c.status === "Pending" && (
-                    <button
-                      onClick={() => resolveComplaint(c._id)}
-                      className="bg-emerald-500 px-3 py-1 rounded-md text-xs"
-                    >
-                      Resolve
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
+  <tbody>
+    {paginatedData.map((c) => (
+      <tr
+        key={c._id}
+        className="border-b border-white/[0.05] hover:bg-white/[0.03] transition"
+      >
+        <td className="py-3 text-left truncate">{c.title}</td>
+        <td className="text-left">{c.category}</td>
+        <td className="text-left">{c.priority}</td>
+        <td className="text-left">{c.status}</td>
+        <td className="text-left">
+          {c.status === "Pending" && (
+            <button
+              onClick={() => resolveComplaint(c._id)}
+              className="bg-emerald-500 px-3 py-1 rounded-md text-xs hover:bg-emerald-400 transition"
+            >
+              Resolve
+            </button>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+</div>
         {/* PAGINATION */}
-        <div className="flex gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mt-4">
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
@@ -409,7 +454,7 @@ const NeonLineTooltip = ({ active, payload, label }) => {
   <div className="bg-white/[0.06] border border-white/[0.08] rounded-2xl p-6">
     <h2 className="text-xl font-semibold mb-4">Reports & Export</h2>
 
-    <div className="flex gap-4">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
       {/* PDF BUTTON */}
       <button
         onClick={() => {
@@ -449,7 +494,7 @@ const NeonLineTooltip = ({ active, payload, label }) => {
   </div>
 </section>
 {/* FOOTER */}
-<div className="text-xs text-slate-500 mt-6 text-center">
+<div className="text-[10px] sm:text-xs text-slate-500 mt-6 text-center">
   Crafted with <span className="text-red-400">❤️</span> by{" "}
   <span className="text-slate-300 font-medium">Vanshh</span>
 </div>

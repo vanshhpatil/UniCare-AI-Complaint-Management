@@ -1,3 +1,38 @@
+// import mongoose from "mongoose";
+
+// const userSchema = new mongoose.Schema(
+//   {
+//     name: {
+//       type: String,
+//       required: true,
+//       trim: true,
+//     },
+
+//     email: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       lowercase: true,
+//       trim: true,
+//       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+//     },
+
+//     password: {
+//       type: String,
+//       required: true,
+//       minlength: 6,
+//     },
+
+//     role: {
+//       type: String,
+//       enum: ["student", "admin"],
+//       default: "student",
+//     },
+//   },
+//   { timestamps: true }
+// );
+
+// export default mongoose.model("User", userSchema);
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
@@ -27,6 +62,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["student", "admin"],
       default: "student",
+    },
+
+    // 🔥 ADD THIS (IMPORTANT)
+    profilePic: {
+      type: String,
+      default: "",
     },
   },
   { timestamps: true }

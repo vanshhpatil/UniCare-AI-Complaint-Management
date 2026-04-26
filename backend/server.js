@@ -20,15 +20,13 @@ const app = express();
 /* ========= MIDDLEWARE ========= */
 app.use(cors());
 app.use(express.json());
-
+app.use("/uploads", express.static("uploads"));
 /* ========= ROUTES ========= */
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 app.use("/api/admin", adminRoutes);
 
-// ❌ feedback हटाया (rollback)
-app.use("/uploads", express.static("uploads"));   //follow up ke liye
 /* ========= TEST ========= */
 app.get("/", (req, res) => {
   res.send("Backend running 🚀");

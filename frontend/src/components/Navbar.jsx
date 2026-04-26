@@ -1,77 +1,131 @@
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ toggleSidebar }) {
-  const { user, logout } = useAuth();
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
-    <header className="h-16 bg-white/[0.04] backdrop-blur-2xl border-b border-white/[0.08] flex items-center justify-between px-6">
-      
-      <div className="text-slate-200 text-sm">
-        Welcome, <span className="font-semibold">{user?.name || user?.email}</span>
+    <div
+      className="
+        w-full
+        flex items-center justify-between
+        px-4 sm:px-6 md:px-8
+        py-3
+        border-b border-white/[0.08]
+        bg-slate-950/80 backdrop-blur
+        relative
+      "
+    >
+      {/* 🔥 LEFT SIDE */}
+      <div className="flex items-center gap-3 min-w-0">
+
+        {/* ✅ MOBILE HAMBURGER */}
+        {toggleSidebar && (
+  <button
+    onClick={toggleSidebar}
+    className="
+      md:hidden
+      bg-indigo-600
+      hover:bg-indigo-500
+      p-2.5
+      rounded-lg
+      text-white
+      transition
+      flex items-center justify-center
+      shadow-md
+    "
+  >
+    ☰
+  </button>
+)}
+
+        {/* ✅ WELCOME TEXT */}
+        <div className="text-sm sm:text-base text-slate-300 truncate">
+          Welcome,{" "}
+          <span className="text-white font-medium">
+            {user?.name}
+          </span>
+        </div>
+
       </div>
 
-      <button
-        onClick={logout}
-        className="bg-red-500/90 hover:bg-red-500 px-4 py-2 rounded-lg text-sm font-semibold"
-      >
-        Logout
-      </button>
-    </header>
+      {/* 🔥 RIGHT SIDE */}
+      <div className="flex items-center gap-2 sm:gap-4">
+
+        <button
+          onClick={handleLogout}
+          className="
+            bg-red-500
+            px-3 sm:px-4
+            py-1.5 sm:py-2
+            rounded-md
+            text-xs sm:text-sm
+            text-white
+            hover:bg-red-400
+            transition
+          "
+        >
+          Logout
+        </button>
+
+      </div>
+    </div>
   );
 }
 // import { useAuth } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
 
 // export default function Navbar({ toggleSidebar }) {
-//   const { user, logout } = useAuth();
+//   const { logout, user } = useAuth();
+//   const navigate = useNavigate();
+
+//   const handleLogout = () => {
+//     logout();              
+//     navigate("/login");   
+//   };
 
 //   return (
-//     <header
-//       className="
-//         h-16
-//         bg-white/[0.04]
-//         backdrop-blur-2xl
-//         border-b border-white/[0.08]
-//         flex items-center justify-between
-//         px-6
-//         sticky top-0 z-30
-//       "
-//     >
-//       {/* LEFT */}
-//       <div className="flex items-center gap-4">
-//         {/* ☰ Hamburger (mobile + desktop both) */}
-//         <button
-//           onClick={toggleSidebar}
-//           className="
-//             text-2xl
-//             hover:text-indigo-400
-//             transition
-//           "
-//           aria-label="Toggle Sidebar"
-//         >
-//           ☰
-//         </button>
+//     <div className="
+//       w-full
+//       flex items-center justify-between
+//       px-4 sm:px-6 md:px-8
+//       py-3
+//       border-b border-white/[0.08]
+//       bg-slate-950/80 backdrop-blur
+//     ">
 
-//         <div className="text-sm text-slate-300">
-//           Welcome,{" "}
-//           <span className="font-semibold text-white">
-//             {user?.name || "Admin"}
-//           </span>
-//         </div>
+//       {/* LEFT SIDE (WELCOME) */}
+//       <div className="text-sm sm:text-base text-slate-300 truncate">
+//         Welcome, <span className="text-white font-medium">{user?.name}</span>
 //       </div>
 
-//       {/* RIGHT */}
-//       <button
-//         onClick={logout}
-//         className="
-//           bg-red-500/90
-//           hover:bg-red-500
-//           px-4 py-2
-//           rounded-lg
-//           text-sm font-semibold
-//         "
-//       >
-//         Logout
-//       </button>
-//     </header>
+//       {/* RIGHT SIDE */}
+//       <div className="flex items-center gap-2 sm:gap-4">
+
+//         {/* LOGOUT */}
+//         <button
+//           onClick={handleLogout}
+//           className="
+//             bg-red-500
+//             px-3 sm:px-4
+//             py-1.5 sm:py-2
+//             rounded-md
+//             text-xs sm:text-sm
+//             text-white
+//             hover:bg-red-400
+//             transition
+//           "
+//         >
+//           Logout
+//         </button>
+
+//       </div>
+//     </div>
 //   );
 // }

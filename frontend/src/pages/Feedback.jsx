@@ -83,7 +83,9 @@ const Feedback = () => {
           Submit Feedback
         </button>
       </div>
+      
     </div>
+    
   );
 };
 
